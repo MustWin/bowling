@@ -17,7 +17,6 @@ module Bowling
     def score
       # TODO: handle last frame
       if is_strike?
-        binding.pry if @frame_number == 5
         10 + self.next_two_balls
       elsif is_spare?
         10 + self.next_ball
@@ -36,9 +35,14 @@ module Bowling
     end
 
     def to_s
+      if @frame_number == 10 && @rolls[1] == 10
+        second_roll = 'X'
+      else
+        second_roll = self.is_spare? ? '/' : @rolls[1]
+      end
       [@frame_number,
        self.is_strike? ? 'X' : @rolls[0],
-       self.is_spare? ? '/' : @rolls[1],
+       second_roll,
        @rolls[2] && @rolls[2] == 10 ? 'X' : (@rolls[2] || ""),
       ].join("\t")
     end
@@ -58,7 +62,7 @@ module Bowling
     end
     
     def second_ball
-      if is_strike?
+      if is_strike? && @frame_number != 10
         @next_frame.first_ball
       else
         @rolls[1] || 0
