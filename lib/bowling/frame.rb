@@ -70,7 +70,7 @@ module Bowling
       roll_1 ||= first_ball
       roll_2 ||= @rolls[1]
 
-      !is_strike? && roll_1 + roll_2 == 10
+      !is_strike?(roll_1) && roll_1 + roll_2 == 10
     end
 
     def first_ball
