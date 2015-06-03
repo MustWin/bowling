@@ -31,12 +31,12 @@ module Bowling
 
     def done?
       (!last_frame? && (is_strike? || @rolls.length == 2)) ||
-      (last_frame? && @rolls.length == 2 && !(is_spare? || is_strike?)) ||
+      (last_frame? && @rolls.length == 2 && !(is_strike? || is_spare?)) ||
       (last_frame? && @rolls.length == 3)
     end
 
     def to_s
-      if last_frame? && @rolls[1] == 10
+      if last_frame? && is_strike?(@rolls[1])
         second_roll = 'X'
       else
         second_roll = self.is_spare? ? '/' : @rolls[1]
@@ -44,18 +44,22 @@ module Bowling
       [@frame_number,
        self.is_strike? ? 'X' : @rolls[0],
        second_roll,
-       @rolls[2] && @rolls[2] == 10 ? 'X' : (@rolls[2] || ""),
+       @rolls[2] && is_strike?(@rolls[2]) ? 'X' : @rolls[2],
       ].join("\t")
     end
 
     protected
 
-    def is_strike?
-      first_ball == 10
+    def is_strike?(roll=nil)
+      roll ||= first_ball
+      roll == 10
     end
 
-    def is_spare?
-      !self.is_strike? && first_ball + @rolls[1] == 10
+    def is_spare?(roll_1=nil, roll_2=nil)
+      roll_1 ||= first_ball
+      roll_2 ||= @rolls[1]
+
+      !is_strike? && roll_1 + roll_2 == 10
     end
 
     def first_ball
@@ -63,7 +67,7 @@ module Bowling
     end
     
     def second_ball
-      if is_strike? && @frame_number != 10
+      if is_strike? && !last_frame?
         @next_frame.first_ball
       else
         @rolls[1] || 0
@@ -81,7 +85,7 @@ module Bowling
 
     # used for strikes
     def next_two_balls
-      if @frame_number == 10
+      if last_frame?
         @rolls[1..2].compact.reduce(:+) || 0
       elsif @next_frame
           @next_frame.first_ball + @next_frame.second_ball
