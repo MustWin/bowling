@@ -36,16 +36,27 @@ module Bowling
     end
 
     def to_s
-      if last_frame? && is_strike?(@rolls[1])
-        second_roll = 'X'
-      else
-        second_roll = self.is_spare? ? '/' : @rolls[1]
-      end
-      [@frame_number,
-       self.is_strike? ? 'X' : @rolls[0],
-       second_roll,
-       @rolls[2] && is_strike?(@rolls[2]) ? 'X' : @rolls[2],
-      ].join("\t")
+      output = [@frame_number, is_strike? ? 'X' : @rolls[0]]
+
+      second_roll = if last_frame? && is_strike?(@rolls[1])
+                      'X'
+                    else #is_spare? is false if this is the last frame
+                      is_spare? ? '/' : @rolls[1]
+                    end
+      output.push(second_roll)
+
+      return output.join("\t") unless last_frame? && @rolls[2]
+
+      third_roll = if is_strike?(@rolls[2])
+                     'X'
+                   elsif !is_strike?(@rolls[1]) && is_spare?(@rolls[1], @rolls[2])
+                     '/'
+                   else
+                     @rolls[2]
+                   end
+      output.push(third_roll)
+
+      output.join("\t")
     end
 
     protected
