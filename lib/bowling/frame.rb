@@ -25,17 +25,18 @@ module Bowling
       end
     end
 
+    def last_frame?
+      @frame_number == 10
+    end
+
     def done?
-      if (@frame_number < 10 && (@rolls[0] == 10 || @rolls.length == 2)) ||
-          (@frame_number == 10 && @rolls.length == 2 && !(self.is_spare? || self.is_strike?))
-        true
-      else
-        false
-      end
+      (!last_frame? && (is_strike? || @rolls.length == 2)) ||
+      (last_frame? && @rolls.length == 2 && !(is_spare? || is_strike?)) ||
+      (last_frame? && @rolls.length == 3)
     end
 
     def to_s
-      if @frame_number == 10 && @rolls[1] == 10
+      if last_frame? && @rolls[1] == 10
         second_roll = 'X'
       else
         second_roll = self.is_spare? ? '/' : @rolls[1]
