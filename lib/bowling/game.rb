@@ -1,9 +1,10 @@
 module Bowling
   class Game
+
     def initialize
       last_frame = nil
       @frames = Array.new(10) do |i|
-        frame = Frame.new(i+1)
+        frame = (i == 9 ? LastFrame.new(i + 1) : Frame.new(i + 1))
         last_frame.next_frame = frame if last_frame
         last_frame = frame
         frame
