@@ -1,11 +1,6 @@
 module Bowling
   class LastFrame < Frame
 
-    def initialize(index)
-      @frame_number = 10
-      @rolls = []
-    end
-
     def score
       @rolls.reduce(:+) || 0
     end
