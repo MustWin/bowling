@@ -36,10 +36,6 @@ module Bowling
       @rolls[0]
     end
 
-    def last_frame?
-      @frame_number == 10
-    end
-
     def done?
       strike? || @rolls.length == 2
     end

@@ -10,10 +10,6 @@ module Bowling
       @rolls.reduce(:+) || 0
     end
 
-    def last_frame?
-      @frame_number == 10
-    end
-
     def done?
       (@rolls.length == 2 && @rolls[0] + @rolls[1] < 10) ||
        @rolls.length == 3
